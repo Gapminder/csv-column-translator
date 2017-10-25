@@ -1,0 +1,25 @@
+.tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc; margin: 1em 0;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+
+label {
+	width: 100px;
+	display: inline-block;
+}
+
+#gapminder_dict {
+	font-size: 12px;
+}
+
+h1 {
+	margin-top: 0;
+}
+
+#container {
+	width: 90%;
+	margin: 30px auto;
+	padding: 30px;
+
+	background: #eee;
+	border: 1px solid #999;
+}
