@@ -2,7 +2,8 @@
 <script type="text/javascript" src="papaparse.min.js"></script>
 <script type="text/javascript">
 
-  let data = { input: null, dict: null, result: null };
+  let files = { input: null, dict: null };
+  let resultData = null;
   let dictionary = { };
   let GapminderDictionary;
 
@@ -46,24 +47,31 @@
 
     setClassDisplay("download", "none");
     let buttons = document.getElementsByClassName("download");
-    addEventListenerList(buttons, 'click', downloadCsv); 
+    addEventListenerList(buttons, 'click', handleDownloadClick); 
 
 	});
 
-  function downloadCsv() {
-    if (data.result) {
-      var hiddenElement = document.createElement('a');
-      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(Papa.unparse(data.result));
-      hiddenElement.target = '_blank';
-      hiddenElement.download = 'translated.csv';
-      hiddenElement.click();
-    }
+  function handleDownloadClick(evt) {
+    if (resultData)
+      startCSVDownload(resultData);
+  }
+
+  function startCSVDownload(data) {
+    var csvData = Papa.unparse(data, {
+      delimiter: files.input.meta.delimiter
+    });
+
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvData);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = 'translated.csv';
+    hiddenElement.click();
   }
 
   function addEventListenerList(list, event, fn) {
-      for (var i = 0, len = list.length; i < len; i++) {
-          list[i].addEventListener(event, fn, false);
-      }
+    for (var i = 0, len = list.length; i < len; i++) {
+      list[i].addEventListener(event, fn, false);
+    }
   }
 
   function setClassDisplay(className, value) {
@@ -114,12 +122,12 @@
       download: download,
       skipEmptyLines: true,
       complete: (res, file) => {
-        data[evt.target.dataset.filetype] = res.data;
+        files[evt.target.dataset.filetype] = res;
         if (evt.target.dataset.filetype == "dict") {
-          dictionary = buildDictionary(data.dict);
+          dictionary = buildDictionary(files.dict.data);
         }
         if (evt.target.dataset.filetype == "input") {
-          updateColumns(data.input);
+          updateColumns(files.input.data);
         }
         updateTranslation();
       }
@@ -147,30 +155,33 @@
   }
 
   function updateTranslation() {
-    if (data.input && dictionary) {
+    if (files.input && dictionary) {
 
       let targetColumnIndex = document.getElementById("column_selector").value;
 
-      data.result = data.input.map(row => row.map((cell, i) => (i == targetColumnIndex && dictionary[cell.toLowerCase()]) ? dictionary[cell.toLowerCase()] : cell ));
+      resultData = files.input.data.map(row => row.map((cell, i) => (i == targetColumnIndex && dictionary[cell.toLowerCase()]) ? dictionary[cell.toLowerCase()] : cell ));
 
-      var table = document.getElementById("table");  // set this to your table
-      table.innerHTML = "";
-
-      var tbody = document.createElement("tbody");
-      data.result.forEach(function(items, i) {
-        var row = document.createElement("tr");
-        items.forEach(function(item) {
-          var cell = (i == 0) ? document.createElement("th") : document.createElement("td");
-          cell.textContent = item;
-          row.appendChild(cell);
-        });
-        tbody.appendChild(row);
-      });
-      table.appendChild(tbody);
+      writeDataToTable(resultData, document.getElementById("table"));
 
       let buttons = document.getElementsByClassName("download");
       setClassDisplay("download", "block");
     }
+  }
+
+  function writeDataToTable(data, table) {
+    table.innerHTML = "";
+
+    var tbody = document.createElement("tbody");
+    data.forEach(function(items, i) {
+      var row = document.createElement("tr");
+      items.forEach(function(item) {
+        var cell = (i == 0) ? document.createElement("th") : document.createElement("td");
+        cell.textContent = item;
+        row.appendChild(cell);
+      });
+      tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
   }
 
 </script>
