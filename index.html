@@ -17,7 +17,7 @@
   });
 
   gapminderDictReady = new Promise((resolve, reject) => {
-    Papa.parse("/gapminder_dictionary.csv", {
+    Papa.parse("gapminder_dictionary.csv", {
       download: true,
       skipEmptyLines: true,
       complete: (res, file) => {
