@@ -37,10 +37,8 @@ body {
 }
 
 #logo {
-	position: absolute;
-	top: 30px;
-	right: 30px;
-	margin-bottom: 30px;
+	float: right;
+	margin: 0 0 30px 30px;
 }
 
 #container {

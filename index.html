@@ -189,12 +189,12 @@
 <a href="https://gapminder.org"><img src="gapminder_logo_transparent.png" height="50" id="logo" /></a>
 <h1>Column translator tool</h1>
 <h2>Input</h2>
-<label for="input_selector">Source:</label><select id="input_selector"><option value="file_input">file</option><option value="url_input">link</option></select>
+<label for="input_selector">Source:</label><select id="input_selector"><option value="file_input">file</option><option value="url_input">url</option></select>
 <input type="file" class="input" id="file_input" data-filetype="input" placeholder="Source file upload">
 <span id="url_input" class="input"><input type="url" placeholder="Source file url"><input type="button" data-filetype="input" id="url_input_button" value="Fetch source file"></span><br><br>
 <label for="column_selector">Column:</label><select id="column_selector"><option>-- no columns, choose a source file first</option></select><br>
 <h2>Dictionary</h2>
-<select id="dict_selector"><option value="gapminder_dict">Gapminder</option><option value="file_dict">file</option><option value="url_dict">link</option></select>
+<select id="dict_selector"><option value="gapminder_dict">Gapminder</option><option value="file_dict">file</option><option value="url_dict">url</option></select>
 <a href="gapminder_dictionary.csv" class="dict" id="gapminder_dict">download dictionary</a>
 <input type="file" class="dict" id="file_dict" data-filetype="dict" placeholder="Dictionary file upload">
 <span id="url_dict" class="dict"><input type="url" placeholder="Dictionary file url"><input type="button" id="url_dict_button" data-filetype="dict" value="Fetch dictionary file"></span><br>
