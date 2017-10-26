@@ -82,7 +82,7 @@
   })
 
 
-	function onInputChange(event) {
+  function onInputChange(event) {
 		console.log(event);
 		let val = event.target.value;
 		let type = event.target.id.split("_")[0];
@@ -93,7 +93,7 @@
       dictionary = GapminderDictionary;
       updateTranslation();
     }
-	}
+  }
 
   function handleUrlSelect(evt) {
     let url = evt.target.previousElementSibling.value;
@@ -141,7 +141,7 @@
   function buildDictionary(array) {
     // prepare dictionary
     return array.reduce((dict, row) => {
-      dict[row[0]] = row[1];
+      dict[row[0].toLowerCase()] = row[1];
       return dict;
     }, {});
   }
@@ -151,7 +151,7 @@
 
       let targetColumnIndex = document.getElementById("column_selector").value;
 
-      data.result = data.input.map(row => row.map((cell, i) => (i == targetColumnIndex && dictionary[cell]) ? dictionary[cell] : cell ));
+      data.result = data.input.map(row => row.map((cell, i) => (i == targetColumnIndex && dictionary[cell.toLowerCase()]) ? dictionary[cell.toLowerCase()] : cell ));
 
       var table = document.getElementById("table");  // set this to your table
       table.innerHTML = "";
