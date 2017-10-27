@@ -4,8 +4,6 @@ Little proof of concept GUI for translating a column in a csv file using a dicti
 
 Will only work in modern browsers due to use of modern web technologies and lack of polyfills.
 
-
-
 ## how to use
 
 Run on a webserver:
@@ -19,20 +17,14 @@ Or visit https://gapminder.github.io/csv-column-translator/
 
 ### Dictionary format
 
-The dictionary is a csv files with at least two columns. There is no header row. Each row is an entry in the dictionary. The first column is the original text, the second column is the translated text. Any further columns are ignored. 
+The dictionary is a csv files which MUST have at least two columns. There MUST be one header row. Each following row MUST be an entry in the dictionary. In each entry, the first cell MUST be the original text, the second column MUST be the translated text. The header of the first column SHOULD be `synonym`, the header of the second column MUST be the header you want the translated column to have. Any further columns MAY contain additional information but are ignored. 
 
-Github Markdown does not support header-less tables so the example below is in an ascii-table.
-
-```
-╔═════════════════════════════════╦═════╗
-║ The Federal Republic of Germany ║ ger ║
-╠═════════════════════════════════╬═════╣
-║ Germany                         ║ ger ║
-╠═════════════════════════════════╬═════╣
-║ Deutschland                     ║ ger ║
-╠═════════════════════════════════╬═════╣
-║ Ukraine                         ║ ukr ║
-╚═════════════════════════════════╩═════╝
-```
+| synonym                     | geo  |
+| --------------------------- | ---- |
+| Germany                     | deu  |
+| Federal Republic of Germany | deu  |
+| Ukraine                     | ukr  |
+| Congo                       | cod  |
+| Congo                       | cog  |
 
 Gapminder dictionary contains one double entry: `MF` translates to both `maf` and `stmar`. Currently translates to `stmar` since it occurs later in the dictionary.
