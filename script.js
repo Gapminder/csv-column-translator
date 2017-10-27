@@ -1,7 +1,7 @@
 
     let files = { input: null, dict: null };
     let resultData = null;
-    let dictionary = { };
+    let dictionary = null;
     let GapminderDictionary;
     let GapminderDictionaries = { geo: "gapminder_geo_dictionary.csv" }
 
@@ -18,9 +18,10 @@
     gapminderDictReady = new Promise((resolve, reject) => {
       Papa.parse(GapminderDictionaries.geo, {
         download: true,
+        header: true,
         skipEmptyLines: true,
         complete: (res, file) => {
-          GapminderDictionary = buildDictionary(res.data);
+          GapminderDictionary = buildDictionary(res);
           resolve();
         }
       });
@@ -28,7 +29,7 @@
 
 
   	domReady.then(() => {
-  		console.log("DOM fully loaded and parsed");
+
   		let selectors = ["input", "dict"];
   		selectors.forEach(selector => {
   			let selectorElement = document.getElementById(selector + "_selector");
@@ -120,10 +121,11 @@
       Papa.parse(file, { 
         download: download,
         skipEmptyLines: true,
+        header: true,
         complete: (res, file) => {
           files[evt.target.dataset.filetype] = res;
           if (evt.target.dataset.filetype == "dict") {
-            dictionary = buildDictionary(files.dict.data);
+            dictionary = buildDictionary(files.dict);
           }
           if (evt.target.dataset.filetype == "input") {
             updateColumns(files.input.data);
@@ -134,31 +136,43 @@
     }
 
     function updateColumns(input) {
-      let values = input[0];
+      let values = files.input.meta.fields;
       let select = document.getElementById("column_selector");
       select.innerHTML = "";
       values.forEach((val, i) => {
         let option = document.createElement("option");
         option.text = val;
-        option.value = i;
+        option.value = val;
         select.add(option);
       })
     }
 
-    function buildDictionary(array) {
-      // prepare dictionary
-      return array.reduce((dict, row) => {
-        dict[row[0].toLowerCase()] = row[1];
+    function buildDictionary(file) {
+      let dictionary = deepCloneObject(file);
+      dictionary.data = file.data.reduce((dict, row) => {
+        dict[row.synonym.toLowerCase()] = row.geo;
         return dict;
       }, {});
+      return dictionary;
     }
 
     function updateTranslation() {
       if (files.input && dictionary) {
 
-        let targetColumnIndex = document.getElementById("column_selector").value;
+        let targetColumn = document.getElementById("column_selector").value;
 
-        resultData = files.input.data.map(row => row.map((cell, i) => (i == targetColumnIndex && dictionary[cell.toLowerCase()]) ? dictionary[cell.toLowerCase()] : cell ));
+        // copy input to result
+        let resultData = deepCloneObject(files.input);
+
+        // translate data
+        resultData.data.forEach(row => { 
+          let lookup = row[targetColumn].toLowerCase();
+          if (dictionary.data[lookup]) 
+            row[targetColumn] = dictionary.data[lookup];
+        });
+
+        // translate header
+        resultData.meta.fields = resultData.meta.fields.map(field => (field == targetColumn) ? dictionary.meta.fields[1] : field)
 
         writeDataToTable(resultData, document.getElementById("table"));
 
@@ -167,18 +181,34 @@
       }
     }
 
-    function writeDataToTable(data, table) {
-      table.innerHTML = "";
+    function writeDataToTable(data, tableElement) {
+      tableElement.innerHTML = "";
 
-      var tbody = document.createElement("tbody");
-      data.forEach(function(items, i) {
+      // head
+      let thead = document.createElement("thead");
+      let row = document.createElement("tr");
+      data.meta.fields.forEach(function(headerItem) {
+        var cell = document.createElement("th");
+        cell.textContent = headerItem;
+        row.appendChild(cell);
+      });
+      thead.appendChild(row);
+      tableElement.appendChild(thead);
+      
+      // body
+      let tbody = document.createElement("tbody");
+      data.data.forEach(function(items) {
         var row = document.createElement("tr");
-        items.forEach(function(item) {
-          var cell = (i == 0) ? document.createElement("th") : document.createElement("td");
+        Object.values(items).forEach(function(item) {
+          var cell = document.createElement("td");
           cell.textContent = item;
           row.appendChild(cell);
         });
         tbody.appendChild(row);
       });
-      table.appendChild(tbody);
+      tableElement.appendChild(tbody);
+    }
+
+    function deepCloneObject(object) {
+      return JSON.parse(JSON.stringify(object));
     }
