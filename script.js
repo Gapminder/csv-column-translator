@@ -3,6 +3,7 @@
     let resultData = null;
     let dictionary = { };
     let GapminderDictionary;
+    let GapminderDictionaries = { geo: "gapminder_geo_dictionary.csv" }
 
     domReady = new Promise(function(resolve) {
       function checkState() {
@@ -15,7 +16,7 @@
     });
 
     gapminderDictReady = new Promise((resolve, reject) => {
-      Papa.parse("gapminder_dictionary.csv", {
+      Papa.parse(GapminderDictionaries.geo, {
         download: true,
         skipEmptyLines: true,
         complete: (res, file) => {
@@ -41,6 +42,7 @@
       document.getElementById('url_input_button').addEventListener('click', handleUrlSelect, false);
       document.getElementById("column_selector").addEventListener('change', updateTranslation, false);
 
+      document.getElementById("gapminder_dict").setAttribute('href', GapminderDictionaries.geo);
 
       setClassDisplay("download", "none");
       let buttons = document.getElementsByClassName("download");
