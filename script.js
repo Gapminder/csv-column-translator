@@ -162,7 +162,7 @@
         let targetColumn = document.getElementById("column_selector").value;
 
         // copy input to result
-        let resultData = deepCloneObject(files.input);
+        resultData = deepCloneObject(files.input);
 
         // translate data
         resultData.data.forEach(row => { 
