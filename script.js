@@ -168,7 +168,8 @@
         resultData.data.forEach(row => { 
           let lookup = row[targetColumn].toLowerCase();
           if (dictionary.data[lookup]) 
-            row[targetColumn] = dictionary.data[lookup];
+            row[dictionary.meta.fields[1]] = dictionary.data[lookup];
+          
         });
 
         // translate header
@@ -199,9 +200,9 @@
       let tbody = document.createElement("tbody");
       data.data.forEach(function(items) {
         var row = document.createElement("tr");
-        Object.values(items).forEach(function(item) {
+        data.meta.fields.forEach(function(field) {
           var cell = document.createElement("td");
-          cell.textContent = item;
+          cell.textContent = items[field];
           row.appendChild(cell);
         });
         tbody.appendChild(row);
